@@ -1,0 +1,46 @@
+package com.example;
+
+import org.apache.log4j.Logger;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+
+@RestController
+public class CalculateController
+{
+    static public Logger logger=Logger.getLogger(CalculateController.class);
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberFormatException.class)
+    public @ResponseBody
+    Error_info FormatError(HttpServletRequest req, NumberFormatException is_no_number) {
+        logger.error("Invalid input");
+        return new Error_info(HttpStatus.BAD_REQUEST, is_no_number.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Throwable.class)
+    public @ResponseBody Error_info UncheckedError(Throwable unchecked)
+    {
+        logger.error("Server error");
+        return new Error_info(HttpStatus.INTERNAL_SERVER_ERROR, unchecked.getMessage());
+    }
+
+    @GetMapping("/calculate")
+    @ResponseBody
+    public Calculate calculate(@RequestParam(value = "real", defaultValue = "0") String real, @RequestParam(value = "comp", defaultValue = "0") String comp) throws NumberFormatException {
+
+        logger.info("Get parameters: "+real+" "+comp);
+        double r, c;
+
+        try {
+            r = Double.valueOf(real);
+            c = Double.valueOf(comp);
+        }
+        catch (NumberFormatException ex) {
+            throw new NumberFormatException("Error: Invalid input");
+        }
+        return new Calculate(r, c);
+    }
+}
