@@ -1,0 +1,27 @@
+package com.example;
+
+public class CacheElement {
+    Calculate res;
+    Long requestTime;
+
+    public CacheElement() {
+        this.res = null;
+        this.requestTime = 1L;
+    }
+
+    public void setRes(Calculate res) {
+        this.res = res;
+    }
+
+    public void inc() {
+        this.requestTime++;
+    }
+
+    public Calculate getRes() {
+        return res;
+    }
+
+    public Long getRequestTime() {
+        return requestTime;
+    }
+}
