@@ -1,0 +1,28 @@
+package com.example;
+
+public class Request {
+    private Double real;
+    private Double comp;
+
+    public Request(){}
+
+    public Request(Double real, Double comp) {
+        this.real=real;
+        this.comp=comp;
+    }
+
+    public Request(String real, String comp) {
+        this.real=Double.valueOf(real);
+        this.comp=Double.valueOf(comp);
+    }
+
+    public double getReal()
+    {
+        return this.real.doubleValue();
+    }
+
+    public double getComp()
+    {
+        return this.comp.doubleValue();
+    }
+}
