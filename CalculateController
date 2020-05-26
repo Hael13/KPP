@@ -84,7 +84,7 @@ public class CalculateController {
 
     @GetMapping("/calculate")
     @ResponseBody
-    public ArrayList<CalculateResult> calculate(@RequestParam(value = "real") ArrayList<String> real, @RequestParam(value = "comp") ArrayList<String> comp) throws NumberFormatException {
+    public Response calculate(@RequestParam(value = "real") ArrayList<String> real, @RequestParam(value = "comp") ArrayList<String> comp) throws NumberFormatException {
 
         this.count.increment();
         ArrayList<CalculateResult> res;
@@ -109,7 +109,17 @@ public class CalculateController {
         Stream<Request> stream=reqList.stream();
         stream.forEach((x)->{res.add(this.work(x));});
 
-        return res;
+        Stream<CalculateResult> responceStream=res.stream().distinct();
+        CalculateResult max=responceStream.max((a, b)->{return (int)(a.getmodule()-b.getmodule());}).get();
+
+        responceStream=res.stream().distinct();
+        CalculateResult min=responceStream.min((a, b)->{return (int)(a.getmodule()-b.getmodule());}).get();
+
+        CalculateResult popular=this.cache.findMostPopular();
+
+        Response result= new Response(res.size(), max, min, popular, res);
+
+        return result;
     }
 
     @GetMapping("/response")
