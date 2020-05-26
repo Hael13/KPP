@@ -1,0 +1,48 @@
+package com.example;
+
+public class Calculate {
+
+    private double module;
+    private double phase;
+
+    public Calculate() {
+        this.module=this.phase=0;
+    }
+
+    public Calculate(double real, double complex) {
+        to_indicative(real, complex);
+    }
+
+    public Calculate(Calculate other) {
+        this.module=other.module;
+        this.phase=other.phase;
+    }
+
+    public void to_indicative(double real, double complex) {
+        this.module = Math.sqrt(Math.pow(real, 2)+Math.pow(complex, 2));
+        if(real!=0)
+            this.phase = Math.atan(complex/real);
+        else
+            this.phase=1.57;
+    }
+
+    public boolean equalResult(Calculate other) {
+        if(this.module==other.module && this.phase==other.phase)
+            return true;
+        return false;
+    }
+
+    public void set(Calculate other) {
+        this.module=other.module;
+        this.phase=other.phase;
+    }
+
+    public double getmodule() {
+        return this.module;
+    }
+
+    public double getphase()
+    {
+        return this.phase;
+    }
+}
