@@ -1,0 +1,44 @@
+package com.example;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+
+@Component
+public class Cache {
+
+    private HashMap<String, CacheElement> cache;
+
+    public Cache() {
+        this.cache=new HashMap<String, CacheElement>();
+    }
+
+    public void add(String key, Calculate temp) {
+        CacheElement el=new CacheElement();
+        el.setRes(temp);
+        this.cache.put(key, el);
+    }
+
+    public CacheElement find(String real, String compl) {
+        String key = real+ " "+compl;
+        CacheElement finded;
+        finded = this.cache.get(key);
+        return finded;
+    }
+
+    public Calculate findMostPopular(){
+        CacheElement res;
+        res=this.cache.values().stream().reduce(null, (result, current)->{
+            if(result==null) {
+                result=current;
+            }
+            else{
+                if(current.getRequestTime()>result.getRequestTime()){
+                    result=current;
+                }
+            }
+            return result;
+        });
+        return res.getRes();
+    }
+
+}
