@@ -16,6 +16,8 @@ public class CalculateController {
     private Counter count;
     @Autowired
     private Cache cache;
+    @Autowired
+    private CalculateService service;
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NumberFormatException.class)
@@ -33,9 +35,9 @@ public class CalculateController {
         return new Error_info(HttpStatus.INTERNAL_SERVER_ERROR, unchecked.getMessage());
     }
 
-    public Calculate work(Request req)
+    public CalculateResult work(Request req)
     {
-        Calculate res;
+        CalculateResult res;
         CacheElement cacheResult;
         logger.info("Get parameters: "+req.getReal()+" "+req.getComp());
         double r, c;
@@ -46,7 +48,7 @@ public class CalculateController {
         if(cacheResult==null) {
             logger.info("No in cache");
             String key=Double.toString(r)+" "+Double.toString(c);
-            res=new Calculate(r, c);
+            res=service.to_indicative(r, c);
             this.cache.add(key, res);
         }
         else {
@@ -62,18 +64,18 @@ public class CalculateController {
     public Response calculate(@RequestBody ArrayList<Request> req) throws NumberFormatException {
 
         this.count.increment();
-        ArrayList<Calculate> res;
-        res=new ArrayList<Calculate>();
+        ArrayList<CalculateResult> res;
+        res=new ArrayList<CalculateResult>();
         Stream<Request> stream=req.stream();
         stream.forEach((current)->{res.add(this.work(current));});
 
-        Stream<Calculate> responceStream=res.stream().distinct();
-        Calculate max=responceStream.max((a, b)->{return (int)(a.getmodule()-b.getmodule());}).get();
+        Stream<CalculateResult> responceStream=res.stream().distinct();
+        CalculateResult max=responceStream.max((a, b)->{return (int)(a.getmodule()-b.getmodule());}).get();
 
         responceStream=res.stream().distinct();
-        Calculate min=responceStream.min((a, b)->{return (int)(a.getmodule()-b.getmodule());}).get();
+        CalculateResult min=responceStream.min((a, b)->{return (int)(a.getmodule()-b.getmodule());}).get();
 
-        Calculate popular=this.cache.findMostPopular();
+        CalculateResult popular=this.cache.findMostPopular();
 
         Response result= new Response(res.size(), max, min, popular, res);
 
@@ -82,10 +84,10 @@ public class CalculateController {
 
     @GetMapping("/calculate")
     @ResponseBody
-    public ArrayList<Calculate> calculate(@RequestParam(value = "real") ArrayList<String> real, @RequestParam(value = "comp") ArrayList<String> comp) throws NumberFormatException {
+    public ArrayList<CalculateResult> calculate(@RequestParam(value = "real") ArrayList<String> real, @RequestParam(value = "comp") ArrayList<String> comp) throws NumberFormatException {
 
         this.count.increment();
-        ArrayList<Calculate> res;
+        ArrayList<CalculateResult> res;
         ArrayList<Request> reqList;
         reqList=new ArrayList<>();
         res=new ArrayList<>();
