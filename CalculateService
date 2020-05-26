@@ -1,0 +1,23 @@
+package com.example;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class CalculateService {
+
+    public CalculateService(){
+
+    }
+
+    public CalculateResult to_indicative(double real, double compl) {
+        double module, phase;
+        module = Math.sqrt(Math.pow(real, 2)+Math.pow(compl, 2));
+        if(real!=0)
+            phase = Math.atan(compl/real);
+        else
+            phase=1.57;
+        CalculateResult res=new CalculateResult(module, phase);
+        return res;
+    }
+
+}
