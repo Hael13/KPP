@@ -1,0 +1,38 @@
+package com.example;
+
+import java.util.ArrayList;
+
+public class Response {
+
+    private Integer amount;
+    private Calculate max, min, popular;
+    private ArrayList<Calculate> res;
+
+    Response(Integer amount, Calculate max, Calculate min, Calculate popular, ArrayList<Calculate> res) {
+        this.amount = amount;
+        this.max = max;
+        this.min = min;
+        this.popular = popular;
+        this.res = res;
+    }
+
+    public Calculate getPopular() {
+        return popular;
+    }
+
+    public Calculate getMax() {
+        return max;
+    }
+
+    public Calculate getMin() {
+        return min;
+    }
+
+    public ArrayList<Calculate> getRes() {
+        return res;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+}
